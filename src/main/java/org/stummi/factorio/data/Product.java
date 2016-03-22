@@ -1,4 +1,4 @@
-package org.stummi.factorio;
+package org.stummi.factorio.data;
 
 import lombok.Value;
 

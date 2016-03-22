@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.stummi.factorio.data.Product;
+import org.stummi.factorio.data.ProductAmount;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -12,6 +15,8 @@ import lombok.Value;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class Receipe {
+	public static final Receipe NONE = builder("None", 60).build();
+
 	private final String name;
 	private final int cycleTime;
 	private final List<ProductAmount> products;
@@ -21,10 +26,10 @@ public class Receipe {
 		return new Builder(name, cycleTime);
 	}
 
-	public static Receipe singleProduct(int cycleTime, ProductAmount product, ProductAmount ... resources) {
+	public static Receipe singleProduct(int cycleTime, ProductAmount product, ProductAmount... resources) {
 		return new Builder(product.getProduct().getName(), cycleTime).product(product).resource(resources).build();
 	}
-	
+
 	@RequiredArgsConstructor
 	public static class Builder {
 		final Map<Product, Double> resources = new HashMap<>();
@@ -32,20 +37,20 @@ public class Receipe {
 		final String name;
 		final int cycleTime;
 
-		Builder resource(ProductAmount ... amounts) {
-			for(ProductAmount amount : amounts) {
+		Builder resource(ProductAmount... amounts) {
+			for (ProductAmount amount : amounts) {
 				resource(amount.getProduct(), amount.getAmount());
 			}
 			return this;
 		}
-		
+
 		Builder resource(Product p, double amount) {
 			resources.put(p, amount);
 			return this;
 		}
 
-		Builder product(ProductAmount ... amounts) {
-			for(ProductAmount amount : amounts) {
+		Builder product(ProductAmount... amounts) {
+			for (ProductAmount amount : amounts) {
 				product(amount.getProduct(), amount.getAmount());
 			}
 			return this;
@@ -57,14 +62,11 @@ public class Receipe {
 		}
 
 		Receipe build() {
-			return new Receipe(name, cycleTime, makeList(resources),
-					makeList(products));
+			return new Receipe(name, cycleTime, makeList(resources), makeList(products));
 		}
 
-		private List<ProductAmount> makeList(Map<Product, Double> resources2) {
-			return resources2.entrySet().stream()
-					.map(e -> new ProductAmount(e.getKey(), e.getValue()))
-					.collect(Collectors.toList());
+		private static List<ProductAmount> makeList(Map<Product, Double> resources2) {
+			return resources2.entrySet().stream().map(e -> new ProductAmount(e.getKey(), e.getValue())).collect(Collectors.toList());
 		}
 	}
 }

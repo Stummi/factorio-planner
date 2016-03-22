@@ -1,29 +1,31 @@
 package org.stummi.factorio;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.stummi.factorio.data.Factory;
 
 public class Plan {
-	final Map<Receipe, Integer> receipes = new HashMap<>();
-	
+	final List<Factory> factories = new ArrayList<>();
+
 	public void addReceipe(Receipe receipe) {
 		addReceipe(receipe, 1);
 	}
 
-	public void addReceipe(Receipe receipe, int count) {
-		receipes.put(receipe, getReceipeCount(receipe) + count);
-		
+	public void addFactory(Factory factory) {
+		factories.add(factory);
 	}
 
-	private int getReceipeCount(Receipe receipe) {
-		return receipes.getOrDefault(receipe, 0);
+	public void addReceipe(Receipe receipe, int count) {
+		Factory fact = new Factory(receipe);
+		fact.setCount(count);
+		factories.add(fact);
 	}
-	
+
 	public Report report() {
 		Report r = new Report();
-		for(Entry<Receipe, Integer> e : receipes.entrySet()) {
-			r.addReceipe(e.getKey(), e.getValue());
+		for (Factory fact : factories) {
+			r.addFactory(fact);
 		}
 		return r;
 	}
