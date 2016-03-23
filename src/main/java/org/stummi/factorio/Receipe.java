@@ -15,6 +15,8 @@ import lombok.Value;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class Receipe {
+	// NULL-Receipe, producing nothing for nothing (using 60 Ticks to avoid zero
+	// divisions on calculating throughputs)
 	public static final Receipe NONE = builder("None", 60).build();
 
 	private final String name;
