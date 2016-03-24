@@ -11,6 +11,7 @@ import com.sun.javafx.binding.DoubleConstant;
 import com.sun.javafx.binding.ObjectConstant;
 
 public class ReportTable extends TableView<Throughputs> {
+	@SuppressWarnings("unchecked")
 	public ReportTable(ImageFactory factory) {
 		TableColumn<Throughputs, Item> itemColumn = new TableColumn<>("Item");
 

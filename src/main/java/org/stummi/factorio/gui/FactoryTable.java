@@ -39,6 +39,7 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public FactoryTable(EntityLoader loader) {
 		ImageFactory ifact = loader.getImageFactory();
 

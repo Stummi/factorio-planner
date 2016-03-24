@@ -10,6 +10,7 @@ import javafx.util.Callback;
 public class SpinnerTableCellFactory<S> implements
 		Callback<TableColumn<S, Number>, TableCell<S, Number>> {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public TableCell<S, Number> call(TableColumn<S, Number> param) {
 
@@ -23,12 +24,13 @@ public class SpinnerTableCellFactory<S> implements
 							ObservableValue<Number> value = getTableColumn()
 									.getCellObservableValue(getIndex());
 							if (value instanceof WritableValue) {
-								((WritableValue<Number>) value)
-										.setValue(newValue);
+								WritableValue<Number> wval = ((WritableValue<Number>) value);
+								wval.setValue(newValue);
 							}
 						});
 			}
 
+			@Override
 			protected void updateItem(Number item, boolean empty) {
 				super.updateItem(item, empty);
 

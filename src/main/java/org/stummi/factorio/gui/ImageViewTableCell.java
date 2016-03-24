@@ -1,8 +1,6 @@
 package org.stummi.factorio.gui;
 
 
-import javafx.geometry.Insets;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

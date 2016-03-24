@@ -3,17 +3,14 @@ package org.stummi.factorio.gui;
 import java.io.File;
 import java.io.IOException;
 
-import org.stummi.factorio.luaconf.LuaEntityLoader;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import org.stummi.factorio.luaconf.LuaEntityLoader;
 
 public class PlannerApplication extends Application {
 
