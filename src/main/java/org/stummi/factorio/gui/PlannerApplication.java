@@ -1,5 +1,10 @@
 package org.stummi.factorio.gui;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.stummi.factorio.luaconf.LuaEntityLoader;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,9 +19,10 @@ public class PlannerApplication extends Application {
 	}
 
 	@Override
-	public void start(Stage stage) {
+	public void start(Stage stage) throws IOException {
+		LuaEntityLoader loader = new LuaEntityLoader(new File(System.getenv("HOME"), ".steam/steam/steamapps/common/Factorio/"));
 
-		FactoryTable table = new FactoryTable();
+		FactoryTable table = new FactoryTable(loader);
 		table.setEditable(true);
 
 		Button addButton = new Button("Add");

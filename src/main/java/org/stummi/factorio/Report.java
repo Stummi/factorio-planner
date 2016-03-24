@@ -20,11 +20,11 @@ public class Report {
 		double outPerSecond;
 
 		void add(Throughput throughput) {
-			inPerSecond += throughput.amountPerSecond();
+			outPerSecond += throughput.amountPerSecond();
 		}
 
 		void remove(Throughput throughput) {
-			outPerSecond += throughput.amountPerSecond();
+			inPerSecond += throughput.amountPerSecond();
 		}
 	}
 

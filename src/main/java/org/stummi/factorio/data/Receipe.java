@@ -35,39 +35,40 @@ public class Receipe implements Entity {
 		final Map<Item, Double> resources = new HashMap<>();
 		final Map<Item, Double> products = new HashMap<>();
 		final String name;
-		final String iconName;
 		final int cycleTime;
+		String iconName;
 
-		public Builder(String name, int cycleTime) {
-			this(name, name, cycleTime);
+		public Builder icon(String iconName) {
+			this.iconName = iconName;
+			return this;
 		}
 
-		Builder resource(ItemAmount... amounts) {
+		public Builder resource(ItemAmount... amounts) {
 			for (ItemAmount amount : amounts) {
 				resource(amount.getItem(), amount.getAmount());
 			}
 			return this;
 		}
 
-		Builder resource(Item p, double amount) {
+		public Builder resource(Item p, double amount) {
 			resources.put(p, amount);
 			return this;
 		}
 
-		Builder product(ItemAmount... amounts) {
+		public Builder product(ItemAmount... amounts) {
 			for (ItemAmount amount : amounts) {
 				product(amount.getItem(), amount.getAmount());
 			}
 			return this;
 		}
 
-		Builder product(Item p, double amount) {
+		public Builder product(Item p, double amount) {
 			products.put(p, amount);
 			return this;
 		}
 
-		Receipe build() {
-			return new Receipe(name, iconName, cycleTime, makeList(resources), makeList(products));
+		public Receipe build() {
+			return new Receipe(name, iconName, cycleTime, makeList(products), makeList(resources));
 		}
 
 		private static List<ItemAmount> makeList(Map<Item, Double> resources2) {

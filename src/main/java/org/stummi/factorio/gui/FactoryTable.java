@@ -3,6 +3,7 @@ package org.stummi.factorio.gui;
 import java.util.Comparator;
 
 import org.stummi.factorio.data.AssemblingMachine;
+import org.stummi.factorio.data.EntityLoader;
 import org.stummi.factorio.data.Factory;
 import org.stummi.factorio.data.Receipe;
 
@@ -28,16 +29,13 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 
 	}
 
-	public FactoryTable() {
-		ImageFactory ifact = new ImageFactory();
+	public FactoryTable(EntityLoader loader) {
+		ImageFactory ifact = loader.getImageFactory();
 
 		TableColumn<Entry, AssemblingMachine> typeCol = new TableColumn<>();
 		setEditable(true);
 
-		ObservableList<AssemblingMachine> factory = FXCollections.observableArrayList(AssemblingMachine.NONE,
-				new AssemblingMachine("Assembling machine 1", "assembling-machine-1", 0),
-				new AssemblingMachine("Assembling machine 2", "assembling-machine-2", 2),
-				new AssemblingMachine("Assembling machine 3", "assembling-machine-3", 4));
+		ObservableList<AssemblingMachine> factory = FXCollections.observableArrayList(loader.getAssemblingMachines().values());
 
 		typeCol.setEditable(true);
 		typeCol.setCellValueFactory(cd -> cd.getValue().getType());
