@@ -1,21 +1,22 @@
 package org.stummi.factorio.gui;
 
+
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
-public class ImageViewListCell<T> extends ListCell<T> {
+public class ImageViewTableCell<S, T> extends TableCell<S, T>{
 	private final ImageView imageView = new ImageView();
 	private final Callback<T, Image> imagemapper;
 
-	public ImageViewListCell(Callback<T, Image> mapper) {
+	public ImageViewTableCell(Callback<T, Image> mapper) {
 		this.imagemapper = mapper;
-		setPadding(Insets.EMPTY);
 		setGraphic(imageView);
 	}
-
+	
 	@Override
 	protected void updateItem(T item, boolean empty) {
 		super.updateItem(item, empty);
@@ -25,5 +26,5 @@ public class ImageViewListCell<T> extends ListCell<T> {
 			imageView.setImage(imagemapper.call(item));
 		}
 	}
-
+	
 }

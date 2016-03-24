@@ -10,12 +10,14 @@ import org.stummi.factorio.data.Item;
 import org.stummi.factorio.data.ItemThroughput;
 import org.stummi.factorio.data.Throughput;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 public class Report {
 	@RequiredArgsConstructor
-	static class Throughputs {
-		private final Item procut;
+	@Getter
+	public static class Throughputs {
+		private final Item product;
 		double inPerSecond;
 		double outPerSecond;
 
@@ -26,8 +28,13 @@ public class Report {
 		void remove(Throughput throughput) {
 			inPerSecond += throughput.amountPerSecond();
 		}
+
+		public double getDiffPerSecond() {
+			return outPerSecond - inPerSecond;
+		}
 	}
 
+	@Getter
 	final Map<Item, Throughputs> throughputs = new HashMap<>();
 
 	/*
@@ -57,7 +64,7 @@ public class Report {
 		throughputs.values().stream().sorted(Comparator.comparingDouble(tp -> (tp.inPerSecond - tp.outPerSecond))).forEach(tp -> {
 			double in = tp.inPerSecond * 60;
 			double out = tp.outPerSecond * 60;
-			pout.printf("%30s|%8.2f|%8.2f|%8.2f%n", tp.procut.getName(), in, out, out - in);
+			pout.printf("%30s|%8.2f|%8.2f|%8.2f%n", tp.product.getName(), in, out, out - in);
 		});
 	}
 

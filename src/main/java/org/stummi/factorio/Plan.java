@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.stummi.factorio.data.Factory;
-import org.stummi.factorio.data.Receipe;
+import org.stummi.factorio.data.Recipe;
 
 public class Plan {
 	final List<Factory> factories = new ArrayList<>();
 
-	public void addReceipe(Receipe receipe) {
+	public void addReceipe(Recipe receipe) {
 		addReceipe(receipe, 1);
 	}
 
@@ -17,7 +17,7 @@ public class Plan {
 		factories.add(factory);
 	}
 
-	public void addReceipe(Receipe receipe, int count) {
+	public void addReceipe(Recipe receipe, int count) {
 		Factory fact = new Factory(receipe);
 		fact.setCount(count);
 		factories.add(fact);

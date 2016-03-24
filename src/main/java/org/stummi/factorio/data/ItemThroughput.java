@@ -7,7 +7,7 @@ public class ItemThroughput {
 	Item item;
 	Throughput throughput;
 
-	public ItemThroughput multiply(int factor) {
+	public ItemThroughput multiply(double factor) {
 		return new ItemThroughput(item, throughput.multiply(factor));
 	}
 }

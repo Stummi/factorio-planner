@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Factory {
-	Receipe receipe = Receipe.NONE;
+	Recipe receipe = Recipe.NONE;
 	AssemblingMachine type = AssemblingMachine.NONE;
 
 	int count = 1;
 
-	public Factory(AssemblingMachine type, Receipe receipe) {
+	public Factory(AssemblingMachine type, Recipe receipe) {
 		this.type = type;
 		this.receipe = receipe;
 	}
@@ -23,7 +23,7 @@ public class Factory {
 		this.type = type;
 	}
 
-	public Factory(Receipe receipe) {
+	public Factory(Recipe receipe) {
 		this.receipe = receipe;
 	}
 
@@ -51,7 +51,11 @@ public class Factory {
 	}
 
 	private List<ItemThroughput> throughputs(List<ItemAmount> items) {
-		return items.stream().map(res -> res.perTicks(receipe.getCycleTime()).multiply(count)).collect(Collectors.toList());
+		return items
+				.stream()
+				.map(res -> res.perTicks(receipe.getCycleTime())
+						.multiply(type.getCraftingSpeed()).multiply(count))
+				.collect(Collectors.toList());
 	}
 
 }

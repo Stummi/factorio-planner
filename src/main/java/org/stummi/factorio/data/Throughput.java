@@ -19,7 +19,7 @@ public class Throughput {
 		return amountPerSeconds(60);
 	}
 
-	public Throughput multiply(int factor) {
+	public Throughput multiply(double factor) {
 		return new Throughput(amount * factor, ticks);
 	}
 }

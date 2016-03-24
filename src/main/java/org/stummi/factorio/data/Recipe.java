@@ -11,10 +11,10 @@ import lombok.Value;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
-public class Receipe implements Entity {
+public class Recipe implements Entity {
 	// NULL-Receipe, producing nothing for nothing (using 60 Ticks to avoid zero
 	// divisions on calculating throughputs)
-	public static final Receipe NONE = builder("None", 60).build();
+	public static final Recipe NONE = builder("None", 60).build();
 
 	private final String name;
 	private final String iconName;
@@ -26,7 +26,7 @@ public class Receipe implements Entity {
 		return new Builder(name, cycleTime);
 	}
 
-	public static Receipe singleProduct(int cycleTime, ItemAmount product, ItemAmount... resources) {
+	public static Recipe singleProduct(int cycleTime, ItemAmount product, ItemAmount... resources) {
 		return new Builder(product.getItem().getName(), cycleTime).product(product).resource(resources).build();
 	}
 
@@ -67,8 +67,8 @@ public class Receipe implements Entity {
 			return this;
 		}
 
-		public Receipe build() {
-			return new Receipe(name, iconName, cycleTime, makeList(products), makeList(resources));
+		public Recipe build() {
+			return new Recipe(name, iconName, cycleTime, makeList(products), makeList(resources));
 		}
 
 		private static List<ItemAmount> makeList(Map<Item, Double> resources2) {

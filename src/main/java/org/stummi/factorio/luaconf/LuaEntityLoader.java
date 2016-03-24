@@ -18,21 +18,24 @@ import org.stummi.factorio.data.Entity;
 import org.stummi.factorio.data.EntityLoader;
 import org.stummi.factorio.data.Item;
 import org.stummi.factorio.data.ItemAmount;
-import org.stummi.factorio.data.Receipe;
-import org.stummi.factorio.data.Receipe.Builder;
+import org.stummi.factorio.data.Recipe;
+import org.stummi.factorio.data.Recipe.Builder;
 import org.stummi.factorio.data.Ticks;
 import org.stummi.factorio.gui.ImageFactory;
 
 public class LuaEntityLoader implements EntityLoader {
 
+	private final File baseDir;
 	private final LuaTable rawData;
-	private final LuaConfImageFactory imageFactory;
+	
+	private LuaConfImageFactory imageFactory;
 
 	private Map<String, Item> items;
 	private Map<String, AssemblingMachine> assemblingMachines;
-	private Map<String, Receipe> recipes;
+	private Map<String, Recipe> recipes;
 
 	public LuaEntityLoader(File baseDir) throws IOException {
+		this.baseDir = baseDir;
 		File luaLib = new File(baseDir, "data/core/lualib/?.lua");
 		File baseData = new File(baseDir, "data/base/?.lua");
 		String packagePath = luaLib.getAbsolutePath() + ";" + baseData.getAbsolutePath();
@@ -47,8 +50,6 @@ public class LuaEntityLoader implements EntityLoader {
 		context.load("require 'data'").call();
 		LuaTable data = (LuaTable) context.get("data");
 		rawData = (LuaTable) data.get("raw");
-
-		this.imageFactory = new LuaConfImageFactory(new File(baseDir, "data/base"));
 	}
 
 	@Override
@@ -81,16 +82,19 @@ public class LuaEntityLoader implements EntityLoader {
 	}
 
 	@Override
-	public Map<String, Receipe> getReceipes() {
+	public Map<String, Recipe> getRecipes() {
 		if (recipes == null) {
 			recipes = getEntityMap("recipe", this::toRecipe);
-			recipes.put(Receipe.NONE.getName(), Receipe.NONE);
+			recipes.put(Recipe.NONE.getName(), Recipe.NONE);
 		}
 		return recipes;
 	}
 
 	@Override
 	public ImageFactory getImageFactory() {
+		if(imageFactory == null) {
+			imageFactory = new LuaConfImageFactory(new File(baseDir, "data/base"));
+		}
 		return imageFactory;
 	}
 
@@ -122,10 +126,12 @@ public class LuaEntityLoader implements EntityLoader {
 		} else {
 			moduleSlots = ((LuaTable) modSpec).get("module_slots").toint();
 		}
-		return new AssemblingMachine(name, icon, moduleSlots);
+		
+		double craftingSpeed = table.get("crafting_speed").todouble();
+		return new AssemblingMachine(name, icon, moduleSlots, craftingSpeed);
 	}
 
-	private Receipe toRecipe(LuaTable table) {
+	private Recipe toRecipe(LuaTable table) {
 		String name = table.get("name").toString();
 		int seconds = table.get("energy_required").toint();
 		Ticks ticks = seconds == 0 ? new Ticks(30) : Ticks.forSeconds(seconds);
@@ -135,22 +141,32 @@ public class LuaEntityLoader implements EntityLoader {
 		LuaValue result = table.get("result");
 		LuaValue resultAmount = table.get("result_count");
 
-		Builder builder = Receipe.builder(name, ticks.getTicks());
+		Builder builder = Recipe.builder(name, ticks.getTicks());
 		Stream.of(ingreds.keys()).map(t -> (LuaTable) ingreds.get(t)).map(this::parseItemAmount).forEach(builder::resource);
 
+		ItemAmount[] products;
 		if (!result.isnil()) {
 			int amount = resultAmount.isnil() ? 1 : resultAmount.toint();
 			String itemName = result.toString();
 			Item item = getNonNullItem(itemName);
+			products = new ItemAmount[] { item.amount(amount) };
 			builder.icon(item.getIconName());
 			builder.product(item, amount);
 		} else {
 			LuaTable tbl = (LuaTable) results;
-			String icon = table.get("icon").toString();
-			builder.icon(icon);
-			Stream.of(tbl.keys()).map(t -> (LuaTable) tbl.get(t)).map(this::parseItemAmount).forEach(builder::product);
+			products = Stream.of(tbl.keys()).map(t -> (LuaTable) tbl.get(t)).map(this::parseItemAmount).toArray(i -> new ItemAmount[i]);
 		}
-
+		
+		builder.product(products);
+		String icon;
+		LuaValue iconVal = table.get("icon");
+		if(iconVal.isnil()) {
+			icon = products[0].getItem().getIconName();
+		} else {
+			icon = iconVal.toString();
+		}
+		builder.icon(icon);
+		
 		return builder.build();
 	}
 
