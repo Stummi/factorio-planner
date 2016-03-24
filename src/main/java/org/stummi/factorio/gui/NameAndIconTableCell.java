@@ -1,13 +1,13 @@
 package org.stummi.factorio.gui;
 
-import org.stummi.factorio.data.NameAndIcon;
+import org.stummi.factorio.data.Entity;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.ImageView;
 
-public class NameAndIconTableCell<S, T extends NameAndIcon> extends TableCell<S, T> {
+public class NameAndIconTableCell<S, T extends Entity> extends TableCell<S, T> {
 	private final ImageFactory factory;
 
 	private ComboBox<T> comboBox;

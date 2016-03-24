@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.stummi.factorio.data.Factory;
+import org.stummi.factorio.data.Receipe;
 
 public class Plan {
 	final List<Factory> factories = new ArrayList<>();

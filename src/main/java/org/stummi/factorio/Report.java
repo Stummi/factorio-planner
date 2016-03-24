@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.stummi.factorio.data.Factory;
-import org.stummi.factorio.data.Product;
-import org.stummi.factorio.data.ProductThroughput;
+import org.stummi.factorio.data.Item;
+import org.stummi.factorio.data.ItemThroughput;
 import org.stummi.factorio.data.Throughput;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class Report {
 	@RequiredArgsConstructor
 	static class Throughputs {
-		private final Product procut;
+		private final Item procut;
 		double inPerSecond;
 		double outPerSecond;
 
@@ -28,7 +28,7 @@ public class Report {
 		}
 	}
 
-	final Map<Product, Throughputs> throughputs = new HashMap<>();
+	final Map<Item, Throughputs> throughputs = new HashMap<>();
 
 	/*
 	 * void addReceipe(Receipe receipe) { addReceipe(receipe, 1); }
@@ -45,7 +45,7 @@ public class Report {
 	 * }
 	 */
 
-	private Throughputs getThroughputs(Product product) {
+	private Throughputs getThroughputs(Item product) {
 		return throughputs.computeIfAbsent(product, Throughputs::new);
 	}
 
@@ -62,12 +62,12 @@ public class Report {
 	}
 
 	public void addFactory(Factory fact) {
-		for (ProductThroughput throughput : fact.getResourceThroughputs()) {
-			getThroughputs(throughput.getProduct()).remove(throughput.getThroughput());
+		for (ItemThroughput throughput : fact.getResourceThroughputs()) {
+			getThroughputs(throughput.getItem()).remove(throughput.getThroughput());
 		}
 
-		for (ProductThroughput throughput : fact.getProductThroughputs()) {
-			getThroughputs(throughput.getProduct()).add(throughput.getThroughput());
+		for (ItemThroughput throughput : fact.getProductThroughputs()) {
+			getThroughputs(throughput.getItem()).add(throughput.getThroughput());
 		}
 	}
 }

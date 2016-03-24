@@ -3,8 +3,6 @@ package org.stummi.factorio.data;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.stummi.factorio.Receipe;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,16 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Factory {
 	Receipe receipe = Receipe.NONE;
-	FactoryType type = FactoryType.NONE;
+	AssemblingMachine type = AssemblingMachine.NONE;
 
 	int count = 1;
 
-	public Factory(FactoryType type, Receipe receipe) {
+	public Factory(AssemblingMachine type, Receipe receipe) {
 		this.type = type;
 		this.receipe = receipe;
 	}
 
-	public Factory(FactoryType type) {
+	public Factory(AssemblingMachine type) {
 		this.type = type;
 	}
 
@@ -44,16 +42,16 @@ public class Factory {
 		count = newCount < 0 ? 0 : newCount;
 	}
 
-	public List<ProductThroughput> getResourceThroughputs() {
+	public List<ItemThroughput> getResourceThroughputs() {
 		return throughputs(receipe.getResources());
 	}
 
-	public List<ProductThroughput> getProductThroughputs() {
+	public List<ItemThroughput> getProductThroughputs() {
 		return throughputs(receipe.getProducts());
 	}
 
-	private List<ProductThroughput> throughputs(List<ProductAmount> products) {
-		return products.stream().map(res -> res.perTicks(receipe.getCycleTime()).multiply(count)).collect(Collectors.toList());
+	private List<ItemThroughput> throughputs(List<ItemAmount> items) {
+		return items.stream().map(res -> res.perTicks(receipe.getCycleTime()).multiply(count)).collect(Collectors.toList());
 	}
 
 }

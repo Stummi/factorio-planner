@@ -1,11 +1,11 @@
 package org.stummi.factorio.gui;
 
-import org.stummi.factorio.data.NameAndIcon;
+import org.stummi.factorio.data.Entity;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SimpleNameAndIcon implements NameAndIcon {
+public class SimpleNameAndIcon implements Entity {
 
 	private final String name;
 

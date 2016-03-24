@@ -2,9 +2,9 @@ package org.stummi.factorio.gui;
 
 import java.util.Comparator;
 
-import org.stummi.factorio.Receipe;
+import org.stummi.factorio.data.AssemblingMachine;
 import org.stummi.factorio.data.Factory;
-import org.stummi.factorio.data.FactoryType;
+import org.stummi.factorio.data.Receipe;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,7 +18,7 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 
 	@Getter
 	static class Entry {
-		ObjectProperty<FactoryType> type = new SimpleObjectProperty<>();
+		ObjectProperty<AssemblingMachine> type = new SimpleObjectProperty<>();
 		ObjectProperty<Receipe> receipe = new SimpleObjectProperty<>();
 
 		Entry(Factory fact) {
@@ -31,18 +31,18 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 	public FactoryTable() {
 		ImageFactory ifact = new ImageFactory();
 
-		TableColumn<Entry, FactoryType> typeCol = new TableColumn<>();
+		TableColumn<Entry, AssemblingMachine> typeCol = new TableColumn<>();
 		setEditable(true);
 
-		ObservableList<FactoryType> factory = FXCollections.observableArrayList(FactoryType.NONE,
-				new FactoryType("Assembling machine 1", "assembling-machine-1", 0),
-				new FactoryType("Assembling machine 2", "assembling-machine-2", 2),
-				new FactoryType("Assembling machine 3", "assembling-machine-3", 4));
+		ObservableList<AssemblingMachine> factory = FXCollections.observableArrayList(AssemblingMachine.NONE,
+				new AssemblingMachine("Assembling machine 1", "assembling-machine-1", 0),
+				new AssemblingMachine("Assembling machine 2", "assembling-machine-2", 2),
+				new AssemblingMachine("Assembling machine 3", "assembling-machine-3", 4));
 
 		typeCol.setEditable(true);
 		typeCol.setCellValueFactory(cd -> cd.getValue().getType());
 		typeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact, factory));
-		typeCol.setComparator(Comparator.comparing(FactoryType::getName));
+		typeCol.setComparator(Comparator.comparing(AssemblingMachine::getName));
 		getColumns().add(typeCol);
 	}
 

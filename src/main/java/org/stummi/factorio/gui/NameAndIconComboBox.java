@@ -1,10 +1,10 @@
 package org.stummi.factorio.gui;
 
-import org.stummi.factorio.data.NameAndIcon;
+import org.stummi.factorio.data.Entity;
 
 import javafx.scene.control.ComboBox;
 
-public class NameAndIconComboBox<T extends NameAndIcon> extends ComboBox<T> {
+public class NameAndIconComboBox<T extends Entity> extends ComboBox<T> {
 	private final ImageFactory imageFactory;
 
 	public NameAndIconComboBox(ImageFactory factory) {

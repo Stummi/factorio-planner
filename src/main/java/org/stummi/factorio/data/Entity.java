@@ -1,6 +1,6 @@
 package org.stummi.factorio.data;
 
-public interface NameAndIcon {
+public interface Entity {
 	String getName();
 	String getIconName();
 }

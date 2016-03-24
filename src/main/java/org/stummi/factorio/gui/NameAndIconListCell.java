@@ -1,13 +1,13 @@
 package org.stummi.factorio.gui;
 
-import org.stummi.factorio.data.NameAndIcon;
+import org.stummi.factorio.data.Entity;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class NameAndIconListCell<T extends NameAndIcon> extends ListCell<T> {
+public class NameAndIconListCell<T extends Entity> extends ListCell<T> {
 	private final ImageFactory factory;
 
 	@Override
