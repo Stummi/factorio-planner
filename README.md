@@ -2,6 +2,8 @@
 
 A Planning Tool for Factorio
 
+![](doc/screenshots/planner.png)
+
 ## Quick Start
 To build the project yourself you need a JDK version 8 and Maven installed. Just type "mvn package" in the root directory, and you should end up with a runnable jarfile under target/factorio-*.jar
 
@@ -12,6 +14,8 @@ What you see here is pretty much WIP. the current state is functional but rudime
 - Load / Save function
 - Module slots
 - Mod support (Should be easy to implement since this tool uses the factorio game files)
+- Currently theres no check if a recipe can be produced by the selected factory type
+- No data about power consumption
 
 ## Developing / Contributing
 Patches are Welcome.
