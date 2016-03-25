@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -28,14 +29,12 @@ public class PlannerApplication extends Application {
 	public void start(Stage stage) throws IOException {
 		File appDir = determineAppDir(stage);
 		if (appDir == null) {
-			// No Game directory could be determined. We cannot do anything
-			// without it
+			// No Game directory could be determined and user canceled the dialog. 
+			// We cannot do anything at this point
 			return;
 		}
 
-		LuaEntityLoader loader = new LuaEntityLoader(new File(
-				System.getenv("HOME"),
-				".steam/steam/SteamApps/common/Factorio/"));
+		LuaEntityLoader loader = new LuaEntityLoader(appDir);
 		JFXImageFactory factory = new JFXImageFactory(
 				loader.getResourceFactory());
 
@@ -54,6 +53,8 @@ public class PlannerApplication extends Application {
 
 		HBox hbox = new HBox(addButton, delButton);
 		HBox vbox = new HBox(factoryTable, reportTable);
+		HBox.setHgrow(factoryTable, Priority.ALWAYS);
+		
 		BorderPane bp = new BorderPane(vbox);
 		bp.setTop(hbox);
 
