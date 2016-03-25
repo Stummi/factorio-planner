@@ -11,6 +11,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import lombok.Getter;
@@ -83,6 +86,17 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements Obser
 		
 		InvalidationListener il = i -> fireInvalidation();
 		getItems().addListener(il);
+		
+		MenuItem addItem = new MenuItem("New");
+		addItem.setOnAction(ae -> newItem());
+
+		MenuItem delItem = new MenuItem("Remove Selected");
+		delItem.setOnAction(ae -> deleteSelected());
+		
+		ContextMenu menu = new ContextMenu(addItem, delItem);
+		setContextMenu(menu);
+		
+		 getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
 	public void addItem(Factory factory) {

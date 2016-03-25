@@ -5,6 +5,9 @@ import lombok.Value;
 
 @Value
 @RequiredArgsConstructor
+/**
+ * An Item denotes anything that can be produced or consumed by Factories
+ */
 public class Item implements Entity {
 	String name;
 	String iconName;

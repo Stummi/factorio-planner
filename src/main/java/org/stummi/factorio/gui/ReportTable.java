@@ -21,20 +21,23 @@ public class ReportTable extends TableView<Throughputs> {
 		itemColumn.setCellValueFactory(cdf -> ObjectConstant.valueOf(cdf
 				.getValue().getProduct()));
 		itemColumn.setPrefWidth(48);
-		
-		TableColumn<Throughputs, Number> inColumn = new TableColumn<>("In/min");
-		inColumn.setCellValueFactory(cdf -> DoubleConstant.valueOf(cdf.getValue().getInPerSecond() * 60));
 
-		TableColumn<Throughputs, Number> outColumn = new TableColumn<>("Out/min");
-		outColumn.setCellValueFactory(cdf -> DoubleConstant.valueOf(cdf.getValue().getOutPerSecond() * 60));
+		TableColumn<Throughputs, Number> inColumn = new TableColumn<>("In/min");
+		inColumn.setCellValueFactory(cdf -> DoubleConstant.valueOf(cdf
+				.getValue().getInPerSecond() * 60));
+
+		TableColumn<Throughputs, Number> outColumn = new TableColumn<>(
+				"Out/min");
+		outColumn.setCellValueFactory(cdf -> DoubleConstant.valueOf(cdf
+				.getValue().getOutPerSecond() * 60));
 
 		TableColumn<Throughputs, Number> diffColumn = new TableColumn<>("Diff");
-		diffColumn.setCellValueFactory(cdf -> DoubleConstant.valueOf(cdf.getValue().getDiffPerSecond() * 60));
+		diffColumn.setCellValueFactory(cdf -> DoubleConstant.valueOf(cdf
+				.getValue().getDiffPerSecond() * 60));
 		diffColumn.setCellFactory(k -> new DiffTableCell());
-		
+
 		getColumns().addAll(itemColumn, inColumn, outColumn, diffColumn);
-		
-		
+
 	}
 
 	public void setReport(Report report) {
