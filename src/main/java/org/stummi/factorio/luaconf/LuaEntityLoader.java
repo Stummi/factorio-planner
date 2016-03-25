@@ -45,7 +45,7 @@ public class LuaEntityLoader implements EntityLoader {
 			context.load(in, "compat", "t", context).call();
 		}
 
-		context.load("package.path = '" + packagePath + "'").call();
+		((LuaTable)context.get("package")).set("path", packagePath);
 		context.load("require 'dataloader'").call();
 		context.load("require 'data'").call();
 		LuaTable data = (LuaTable) context.get("data");
