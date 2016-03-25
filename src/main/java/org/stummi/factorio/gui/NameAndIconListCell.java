@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class NameAndIconListCell<T extends Entity> extends ListCell<T> {
-	private final ImageFactory factory;
+	private final JFXImageFactory factory;
 
 	@Override
 	protected void updateItem(T item, boolean isEmpty) {

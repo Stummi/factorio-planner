@@ -20,15 +20,15 @@ import org.stummi.factorio.data.Item;
 import org.stummi.factorio.data.ItemAmount;
 import org.stummi.factorio.data.Recipe;
 import org.stummi.factorio.data.Recipe.Builder;
+import org.stummi.factorio.data.ResourceFactory;
 import org.stummi.factorio.data.Ticks;
-import org.stummi.factorio.gui.ImageFactory;
 
 public class LuaEntityLoader implements EntityLoader {
 
 	private final File baseDir;
 	private final LuaTable rawData;
 	
-	private LuaConfImageFactory imageFactory;
+	private LuaConfResourceFactory resourceFactory;
 
 	private Map<String, Item> items;
 	private Map<String, AssemblingMachine> assemblingMachines;
@@ -91,11 +91,11 @@ public class LuaEntityLoader implements EntityLoader {
 	}
 
 	@Override
-	public ImageFactory getImageFactory() {
-		if(imageFactory == null) {
-			imageFactory = new LuaConfImageFactory(new File(baseDir, "data/base"));
+	public ResourceFactory getResourceFactory() {
+		if(resourceFactory == null) {
+			resourceFactory = new LuaConfResourceFactory(new File(baseDir, "data/base"));
 		}
-		return imageFactory;
+		return resourceFactory;
 	}
 
 	private <T extends Entity> Map<String, T> getEntityMap(String name, Function<LuaTable, T> converter) {

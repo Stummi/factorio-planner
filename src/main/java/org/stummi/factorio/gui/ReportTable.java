@@ -12,7 +12,7 @@ import com.sun.javafx.binding.ObjectConstant;
 
 public class ReportTable extends TableView<Throughputs> {
 	@SuppressWarnings("unchecked")
-	public ReportTable(ImageFactory factory) {
+	public ReportTable(JFXImageFactory factory) {
 		TableColumn<Throughputs, Item> itemColumn = new TableColumn<>("Item");
 
 		itemColumn
@@ -33,9 +33,12 @@ public class ReportTable extends TableView<Throughputs> {
 		diffColumn.setCellFactory(k -> new DiffTableCell());
 		
 		getColumns().addAll(itemColumn, inColumn, outColumn, diffColumn);
+		
+		
 	}
 
 	public void setReport(Report report) {
 		getItems().setAll(report.getThroughputs().values());
+		sort();
 	}
 }

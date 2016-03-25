@@ -21,20 +21,21 @@ public class PlannerApplication extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
 		LuaEntityLoader loader = new LuaEntityLoader(new File(System.getenv("HOME"), ".steam/steam/SteamApps/common/Factorio/"));
-
-		FactoryTable factoryTable = new FactoryTable(loader);
+		JFXImageFactory factory = new JFXImageFactory(loader.getResourceFactory());
+		
+		FactoryTable factoryTable = new FactoryTable(loader, factory);
 		factoryTable.setEditable(true);
 		
-		ReportTable reportTable = new ReportTable(loader.getImageFactory());
+		ReportTable reportTable = new ReportTable(factory);
 
 		Button addButton = new Button("Add");
 		Button delButton = new Button("Delete");
-		Button reportButton = new Button("Report");
 
 		addButton.setOnAction(me -> factoryTable.newItem());
 		delButton.setOnAction(me -> factoryTable.deleteSelected());
-		reportButton.setOnAction(me -> reportTable.setReport(factoryTable.getReport()));
-		HBox hbox = new HBox(addButton, delButton, reportButton);
+		factoryTable.addListener(me -> reportTable.setReport(factoryTable.getReport()));
+
+		HBox hbox = new HBox(addButton, delButton);
 		HBox vbox = new HBox(factoryTable, reportTable);
 		BorderPane bp = new BorderPane(vbox);
 		bp.setTop(hbox);

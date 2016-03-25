@@ -1,5 +1,10 @@
 package org.stummi.factorio.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -18,10 +23,10 @@ import org.stummi.factorio.data.EntityLoader;
 import org.stummi.factorio.data.Factory;
 import org.stummi.factorio.data.Recipe;
 
-public class FactoryTable extends TableView<FactoryTable.Entry> {
+public class FactoryTable extends TableView<FactoryTable.Entry> implements Observable{
 
 	@Getter
-	static class Entry {
+	class Entry {
 		ObjectProperty<AssemblingMachine> type = new SimpleObjectProperty<>();
 		ObjectProperty<Recipe> receipe = new SimpleObjectProperty<>();
 		IntegerProperty count = new SimpleIntegerProperty(1);
@@ -29,6 +34,10 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 		Entry(Factory fact) {
 			type.set(fact.getType());
 			receipe.set(fact.getReceipe());
+			InvalidationListener li = l -> fireInvalidation(); 
+			type.addListener(li);
+			receipe.addListener(li);
+			count.addListener(li);
 		}
 
 		public Factory toFactory() {
@@ -39,10 +48,10 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public FactoryTable(EntityLoader loader) {
-		ImageFactory ifact = loader.getImageFactory();
+	private List<InvalidationListener> listeners = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
+	public FactoryTable(EntityLoader loader, JFXImageFactory ifact) {
 		setEditable(true);
 
 		ObservableList<AssemblingMachine> factories = FXCollections.observableArrayList(loader.getAssemblingMachines().values());
@@ -71,6 +80,9 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 		countCol.setCellFactory(cd -> new SpinnerCell<Entry>());
 		
 		getColumns().addAll(typeCol, recipeCol, countCol);
+		
+		InvalidationListener il = i -> fireInvalidation();
+		getItems().addListener(il);
 	}
 
 	public void addItem(Factory factory) {
@@ -89,6 +101,20 @@ public class FactoryTable extends TableView<FactoryTable.Entry> {
 		Plan plan = new Plan();
 		getItems().forEach(i -> plan.addFactory(i.toFactory()));
 		return plan.report();
+	}
+
+	private void fireInvalidation() {
+		listeners.forEach(l -> l.invalidated(this));
+	}
+	
+	@Override
+	public void addListener(InvalidationListener arg0) {
+		listeners.add(arg0);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener arg0) {
+		listeners.remove(arg0);
 	}
 
 }

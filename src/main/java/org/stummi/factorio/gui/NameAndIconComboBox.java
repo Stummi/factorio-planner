@@ -6,9 +6,9 @@ import javafx.scene.control.ComboBox;
 import org.stummi.factorio.data.Entity;
 
 public class NameAndIconComboBox<T extends Entity> extends ComboBox<T> {
-	private final ImageFactory imageFactory;
+	private final JFXImageFactory imageFactory;
 
-	public NameAndIconComboBox(ImageFactory factory) {
+	public NameAndIconComboBox(JFXImageFactory factory) {
 		this.imageFactory = factory;
 		setPrefSize(50, 50);
 		setButtonCell(new ImageViewListCell<>(t -> factory.getImage(t.getIconName())));

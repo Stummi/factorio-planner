@@ -8,14 +8,14 @@ import javafx.scene.control.TableCell;
 import javafx.scene.image.ImageView;
 
 public class NameAndIconTableCell<S, T extends Entity> extends TableCell<S, T> {
-	private final ImageFactory factory;
+	private final JFXImageFactory factory;
 
 	private ComboBox<T> comboBox;
 	private ImageView imageView = new ImageView();
 
 	private ObservableList<T> data;
 
-	public NameAndIconTableCell(ImageFactory factory, ObservableList<T> data) {
+	public NameAndIconTableCell(JFXImageFactory factory, ObservableList<T> data) {
 		this.factory = factory;
 		this.data = data;
 		imageView = new ImageView();
