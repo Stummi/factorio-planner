@@ -89,7 +89,7 @@ public class LuaEntityLoader implements EntityLoader {
 		}
 		return recipes;
 	}
-
+	
 	@Override
 	public ResourceFactory getResourceFactory() {
 		if(resourceFactory == null) {
@@ -142,7 +142,7 @@ public class LuaEntityLoader implements EntityLoader {
 		LuaValue resultAmount = table.get("result_count");
 
 		Builder builder = Recipe.builder(name, ticks.getTicks());
-		Stream.of(ingreds.keys()).map(t -> (LuaTable) ingreds.get(t)).map(this::parseItemAmount).forEach(builder::resource);
+		Stream.of(ingreds.keys()).map(t -> (LuaTable) ingreds.get(t)).map(this::toItemAmount).forEach(builder::resource);
 
 		ItemAmount[] products;
 		if (!result.isnil()) {
@@ -154,7 +154,7 @@ public class LuaEntityLoader implements EntityLoader {
 			builder.product(item, amount);
 		} else {
 			LuaTable tbl = (LuaTable) results;
-			products = Stream.of(tbl.keys()).map(t -> (LuaTable) tbl.get(t)).map(this::parseItemAmount).toArray(i -> new ItemAmount[i]);
+			products = Stream.of(tbl.keys()).map(t -> (LuaTable) tbl.get(t)).map(this::toItemAmount).toArray(i -> new ItemAmount[i]);
 		}
 		
 		builder.product(products);
@@ -170,7 +170,7 @@ public class LuaEntityLoader implements EntityLoader {
 		return builder.build();
 	}
 
-	private ItemAmount parseItemAmount(LuaTable table) {
+	private ItemAmount toItemAmount(LuaTable table) {
 		LuaValue nameVal = table.get("name");
 		String name;
 		int amount;

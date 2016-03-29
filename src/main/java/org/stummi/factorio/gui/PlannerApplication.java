@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -38,6 +39,7 @@ public class PlannerApplication extends Application {
 		JFXImageFactory factory = new JFXImageFactory(
 				loader.getResourceFactory());
 
+		//GoalTable goalTable = new GoalTable(loader, factory);
 		FactoryTable factoryTable = new FactoryTable(loader, factory);
 		factoryTable.setEditable(true);
 
@@ -52,7 +54,7 @@ public class PlannerApplication extends Application {
 				.getReport()));
 
 		HBox hbox = new HBox(addButton, delButton);
-		HBox vbox = new HBox(factoryTable, reportTable);
+		SplitPane vbox = new SplitPane(factoryTable, reportTable);
 		HBox.setHgrow(factoryTable, Priority.ALWAYS);
 		
 		BorderPane bp = new BorderPane(vbox);

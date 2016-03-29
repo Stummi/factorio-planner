@@ -1,13 +1,15 @@
 package org.stummi.factorio.gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +18,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import lombok.Getter;
 
 import org.stummi.factorio.Plan;
@@ -26,29 +29,46 @@ import org.stummi.factorio.data.EntityLoader;
 import org.stummi.factorio.data.Factory;
 import org.stummi.factorio.data.Recipe;
 
-public class FactoryTable extends TableView<FactoryTable.Entry> implements Observable{
+public class FactoryTable extends TableView<FactoryTable.Entry> implements
+		Observable {
 
 	@Getter
 	class Entry {
 		ObjectProperty<AssemblingMachine> type = new SimpleObjectProperty<>();
 		ObjectProperty<Recipe> receipe = new SimpleObjectProperty<>();
-		IntegerProperty count = new SimpleIntegerProperty(1);
-		
+		ObjectProperty<Double> balancedCount = new SimpleObjectProperty<>(0D);
+		ObjectProperty<Double> userCount = new SimpleObjectProperty<>(1D);
+		BooleanProperty autobalance = new SimpleBooleanProperty();
+
 		Entry(Factory fact) {
 			type.set(fact.getType());
-			receipe.set(fact.getReceipe());
-			InvalidationListener li = l -> fireInvalidation(); 
+			receipe.set(fact.getRecipe());
+			InvalidationListener li = l -> fireInvalidation();
 			type.addListener(li);
 			receipe.addListener(li);
-			count.addListener(li);
+			autobalance.addListener(li);
+			userCount.addListener(li);
+			autobalance.addListener(e -> refresh());
 		}
 
 		public Factory toFactory() {
 			Factory ret = new Factory(type.get(), receipe.get());
-			ret.setCount(count.get());
 			return ret;
 		}
 
+		public ObjectProperty<Double> getCount() {
+			return autobalance.get() ? balancedCount : userCount;
+		}
+
+		void addToPlan(Plan plan) {
+			Factory fact = toFactory();
+			if(autobalance.get()) {
+				plan.addFactoryToBalance(fact);
+			} else {
+				System.out.println("add: " + fact + " - " + userCount);
+				plan.addFactory(fact, userCount.get());
+			}
+		}
 	}
 
 	private List<InvalidationListener> listeners = new ArrayList<>();
@@ -56,47 +76,58 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements Obser
 	@SuppressWarnings("unchecked")
 	public FactoryTable(EntityLoader loader, JFXImageFactory ifact) {
 		setEditable(true);
+		
 
-		ObservableList<AssemblingMachine> factories = FXCollections.observableArrayList(loader.getAssemblingMachines().values());
+		ObservableList<AssemblingMachine> factories = FXCollections
+				.observableArrayList(loader.getAssemblingMachines().values());
 		factories.sort(Entity.nameComparator());
-		
-		ObservableList<Recipe> recipes = FXCollections.observableArrayList(loader.getRecipes().values());
+
+		ObservableList<Recipe> recipes = FXCollections
+				.observableArrayList(loader.getRecipes().values());
 		recipes.sort(Entity.nameComparator());
-		
-		TableColumn<Entry, AssemblingMachine> typeCol = new TableColumn<>("type");
+
+		TableColumn<Entry, AssemblingMachine> typeCol = new TableColumn<>(
+				"type");
 		typeCol.setEditable(true);
 		typeCol.setCellValueFactory(cd -> cd.getValue().getType());
-		typeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact, factories));
+		typeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact,
+				factories));
 		typeCol.setComparator(Entity.nameComparator());
 		typeCol.setPrefWidth(70);
 
 		TableColumn<Entry, Recipe> recipeCol = new TableColumn<>("receipe");
 		recipeCol.setEditable(true);
 		recipeCol.setCellValueFactory(cd -> cd.getValue().getReceipe());
-		recipeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact, recipes));
+		recipeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact,
+				recipes));
 		recipeCol.setComparator(Entity.nameComparator());
 		recipeCol.setPrefWidth(70);
-		
-		TableColumn<Entry, Number> countCol = new TableColumn<>("count");
+
+		TableColumn<Entry, Double> countCol = new TableColumn<>("count");
 		countCol.setEditable(true);
 		countCol.setCellValueFactory(cd -> cd.getValue().getCount());
-		countCol.setCellFactory(cd -> new SpinnerCell<Entry>());
+		countCol.setCellFactory(col -> new SpinnerCell<>());
 		
-		getColumns().addAll(typeCol, recipeCol, countCol);
+		TableColumn<Entry, Boolean> autobalanceCol = new TableColumn<>("auto");
+		autobalanceCol.setEditable(true);
+		autobalanceCol.setCellValueFactory(cd -> cd.getValue().getAutobalance());
+		autobalanceCol.setCellFactory(col -> new CheckBoxTableCell<>());
+		
+		getColumns().addAll(typeCol, recipeCol, countCol, autobalanceCol);
 		
 		InvalidationListener il = i -> fireInvalidation();
 		getItems().addListener(il);
-		
+
 		MenuItem addItem = new MenuItem("New");
 		addItem.setOnAction(ae -> newItem());
 
 		MenuItem delItem = new MenuItem("Remove Selected");
 		delItem.setOnAction(ae -> deleteSelected());
-		
+
 		ContextMenu menu = new ContextMenu(addItem, delItem);
 		setContextMenu(menu);
-		
-		 getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+		getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
 	public void addItem(Factory factory) {
@@ -104,7 +135,7 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements Obser
 	}
 
 	public void newItem() {
-		addItem(new Factory());
+		getItems().add(new Entry(Factory.NONE));
 	}
 
 	public void deleteSelected() {
@@ -113,14 +144,25 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements Obser
 
 	public Report getReport() {
 		Plan plan = new Plan();
-		getItems().forEach(i -> plan.addFactory(i.toFactory()));
-		return plan.report();
+		getItems().forEach(e -> e.addToPlan(plan));
+		Report balancedReport = plan.getBalancedReport();
+		
+		Map<Factory, Double> balancedFactories = new HashMap<>(balancedReport.getBalancedFactories());
+		for(Entry e : getItems()) {
+			if(!e.autobalance.get()) {
+				continue;
+			}
+			
+			Double val = balancedFactories.remove(e.toFactory());
+			e.balancedCount.set(val);
+		}
+		return balancedReport;
 	}
 
 	private void fireInvalidation() {
 		listeners.forEach(l -> l.invalidated(this));
 	}
-	
+
 	@Override
 	public void addListener(InvalidationListener arg0) {
 		listeners.add(arg0);

@@ -33,4 +33,21 @@ public interface EntityLoader {
 	 * the Enties returned from this instance
 	 */
 	ResourceFactory getResourceFactory();
+	
+	// convience methods
+	default AssemblingMachine getAssemblingMachine(String name) {
+		return getAssemblingMachines().get(name);
+	}
+	
+	default Recipe getRecipe(String name) {
+		return getRecipes().get(name);
+	}
+	
+	default Item getItem(String name) {
+		return getItems().get(name);
+	}
+	
+	default Factory getFactory(String assemblingMachine, String receipe) {
+		return new Factory(getAssemblingMachine(assemblingMachine), getRecipe(receipe));
+	}
 }

@@ -3,58 +3,37 @@ package org.stummi.factorio.data;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Value;
 
-@Data
-@NoArgsConstructor
+@Value
+@AllArgsConstructor
 public class Factory {
-	Recipe receipe = Recipe.NONE;
-	AssemblingMachine type = AssemblingMachine.NONE;
-
-	int count = 1;
-
-	public Factory(AssemblingMachine type, Recipe receipe) {
-		this.type = type;
-		this.receipe = receipe;
-	}
+	public static final Factory NONE = new Factory(AssemblingMachine.NONE, Recipe.NONE);
+	AssemblingMachine type;
+	Recipe recipe;
 
 	public Factory(AssemblingMachine type) {
-		this.type = type;
+		this(type, Recipe.NONE);
 	}
 
 	public Factory(Recipe receipe) {
-		this.receipe = receipe;
-	}
-
-	public void add(int inc) {
-		count += inc;
-	}
-
-	public void remove(int dec) {
-		count -= dec;
-		if (count < 0) {
-			count = 0;
-		}
-	}
-
-	public void setCount(int newCount) {
-		count = newCount < 0 ? 0 : newCount;
+		this(AssemblingMachine.NONE, receipe);
 	}
 
 	public List<ItemThroughput> getResourceThroughputs() {
-		return throughputs(receipe.getResources());
+		return throughputs(recipe.getResources());
 	}
 
 	public List<ItemThroughput> getProductThroughputs() {
-		return throughputs(receipe.getProducts());
+		return throughputs(recipe.getProducts());
 	}
 
 	private List<ItemThroughput> throughputs(List<ItemAmount> items) {
 		return items
 				.stream()
-				.map(res -> res.perTicks(receipe.getCycleTime())
-						.multiply(type.getCraftingSpeed()).multiply(count))
+				.map(res -> res.perTicks(recipe.getCycleTime())
+						.multiply(type.getCraftingSpeed()))
 				.collect(Collectors.toList());
 	}
 

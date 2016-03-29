@@ -13,12 +13,23 @@ public class DiffTableCell extends TableCell<Throughputs, Number> {
 			setText(null);
 			return;
 		}
+		
+		
 
+		Throughputs tp =  (Throughputs) getTableRow().getItem();
+		if(tp != null) {
+			System.out.println(tp.getProduct());
+			System.out.println(tp.getInPerSecond());
+			System.out.println(tp.getOutPerSecond());
+			System.out.println(tp.getDiffPerSecond());
+		}
+	
 		double dval = val.doubleValue();
-		setText(Double.toString(dval));
-		if(dval < 0) {
+
+		setText(String.format("%.3f", dval));
+		if(dval < 0e-5) {
 			setTextFill(Color.RED);
-		} else if (dval > 0) {
+		} else if (dval > 0e-5) {
 			setTextFill(Color.GREEN);
 		} else {
 			setTextFill(Color.BLACK);
