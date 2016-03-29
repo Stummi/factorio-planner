@@ -173,13 +173,13 @@ public class LuaEntityLoader implements EntityLoader {
 	private ItemAmount toItemAmount(LuaTable table) {
 		LuaValue nameVal = table.get("name");
 		String name;
-		int amount;
+		double amount;
 		if (nameVal.isnil()) {
 			name = table.get(1).toString();
 			amount = table.get(2).toint();
 		} else {
 			name = nameVal.toString();
-			amount = table.get("amount").toint();
+			amount = table.get("amount").todouble();
 		}
 
 		Item item = getNonNullItem(name);
