@@ -17,10 +17,13 @@ public class GamePathFinder {
 
 		String home = System.getenv("HOME");
 		File[] candidates = {
-				// seems to differ between two linux steam machines for me. No
+				// seems to differ between serval linux steam machines for me. No
 				// Idea why
 				new File(home, ".steam/steam/SteamApps/common/Factorio/"),
-				new File(home, ".steam/steam/steamapps/common/Factorio/") };
+				new File(home, ".steam/steam/steamapps/common/Factorio/"),
+				new File(home, ".local/share/Steam/SteamApps"),
+				new File(home, ".local/share/Steam/steamapps")
+			};
 
 		for (File f : candidates) {
 			if (isSuitable(f)) {
