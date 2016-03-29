@@ -40,8 +40,9 @@ public class SpinnerCell<S> extends TableCell<Entry, Double> {
 		} else {
 			TableRow<Entry> row = getTableRow();
 			boolean autobalance = false;
-			if(row.getItem() != null) {
-				autobalance = row.getItem().autobalance.get();
+			Entry rowItem = row.getItem();
+			if(rowItem != null) {
+				autobalance = rowItem.autobalance.get();
 			}
 			
 			setEditable(!autobalance);
@@ -51,11 +52,12 @@ public class SpinnerCell<S> extends TableCell<Entry, Double> {
 				setText(null);
 				setGraphic(null);
 			} else {
-				Double val = getItem();
 				if(autobalance) {
+					Double val = rowItem.getBalancedCount().get();
 					textField.setText(val == null ? "" : String.format("%.2f", getItem()));
 					setGraphic(textField);
 				} else {
+					Double val = rowItem == null ? item : rowItem.getUserCount().get();
 					spinner.getValueFactory().setValue(val);
 					setGraphic(spinner);
 				}

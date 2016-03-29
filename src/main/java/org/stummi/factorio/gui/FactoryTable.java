@@ -65,7 +65,6 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 			if(autobalance.get()) {
 				plan.addFactoryToBalance(fact);
 			} else {
-				System.out.println("add: " + fact + " - " + userCount);
 				plan.addFactory(fact, userCount.get());
 			}
 		}

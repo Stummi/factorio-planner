@@ -17,12 +17,6 @@ public class DiffTableCell extends TableCell<Throughputs, Number> {
 		
 
 		Throughputs tp =  (Throughputs) getTableRow().getItem();
-		if(tp != null) {
-			System.out.println(tp.getProduct());
-			System.out.println(tp.getInPerSecond());
-			System.out.println(tp.getOutPerSecond());
-			System.out.println(tp.getDiffPerSecond());
-		}
 	
 		double dval = val.doubleValue();
 
