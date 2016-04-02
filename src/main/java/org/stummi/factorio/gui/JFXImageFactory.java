@@ -11,7 +11,7 @@ import org.stummi.factorio.data.ResourceFactory;
 
 @RequiredArgsConstructor
 public class JFXImageFactory {
-	private static final Image DEFAULT_IMAGE = new Image("/questionmark.png");
+	public static final Image DEFAULT_IMAGE = new Image("/questionmark.png");
 	private final Map<String, Image> cache = new HashMap<>();
 	private final ResourceFactory factory;
 

@@ -47,7 +47,7 @@ public interface EntityLoader {
 		return getItems().get(name);
 	}
 	
-	default Factory getFactory(String assemblingMachine, String receipe) {
-		return new Factory(getAssemblingMachine(assemblingMachine), getRecipe(receipe));
+	default Factory getFactory(String assemblingMachine, String recipe) {
+		return new Factory(getAssemblingMachine(assemblingMachine), getRecipe(recipe));
 	}
 }

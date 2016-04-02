@@ -27,6 +27,7 @@ import org.stummi.factorio.data.AssemblingMachine;
 import org.stummi.factorio.data.Entity;
 import org.stummi.factorio.data.EntityLoader;
 import org.stummi.factorio.data.Factory;
+import org.stummi.factorio.data.ItemThroughput;
 import org.stummi.factorio.data.Recipe;
 
 public class FactoryTable extends TableView<FactoryTable.Entry> implements
@@ -46,9 +47,9 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 			InvalidationListener li = l -> fireInvalidation();
 			type.addListener(li);
 			receipe.addListener(li);
-			autobalance.addListener(li);
 			userCount.addListener(li);
 			autobalance.addListener(e -> refresh());
+			autobalance.addListener(li);
 		}
 
 		public Factory toFactory() {
@@ -129,6 +130,13 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 		getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
+	public void addRecipe(Recipe recipe) {
+		Entry entry = new Entry(Factory.NONE);
+		entry.autobalance.set(true);
+		entry.receipe.set(recipe);
+		getItems().add(entry);
+	}
+	
 	public void addItem(Factory factory) {
 		getItems().add(new Entry(factory));
 	}
@@ -141,8 +149,9 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 		getItems().removeAll(getSelectionModel().getSelectedItems());
 	}
 
-	public Report getReport() {
+	public Report getReport(List<ItemThroughput> goals) {
 		Plan plan = new Plan();
+		plan.addGoals(goals);
 		getItems().forEach(e -> e.addToPlan(plan));
 		Report balancedReport = plan.getBalancedReport();
 		

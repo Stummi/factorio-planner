@@ -14,10 +14,6 @@ public class DiffTableCell extends TableCell<Throughputs, Number> {
 			return;
 		}
 		
-		
-
-		Throughputs tp =  (Throughputs) getTableRow().getItem();
-	
 		double dval = val.doubleValue();
 
 		setText(String.format("%.3f", dval));

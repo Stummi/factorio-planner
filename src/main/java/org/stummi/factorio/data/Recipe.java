@@ -12,7 +12,7 @@ import lombok.Value;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class Recipe implements Entity {
-	// NULL-Receipe, producing nothing for nothing (using 60 Ticks to avoid zero
+	// NULL-Recipe, producing nothing for nothing (using 60 Ticks to avoid zero
 	// divisions on calculating throughputs)
 	public static final Recipe NONE = builder("None", 60).build();
 

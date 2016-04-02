@@ -1,9 +1,10 @@
 .combo-box {
-	-fx-background-color: green;
-	-fx-text-fill: #006464;
-    /*-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;*/
     -fx-background-color: transparent;
     -fx-background-insets: 0 0 0 0, 0, 0, 0;
     -fx-background-radius: 0 0 0 0, 0, 0, 0;
     -fx-border-width: 0 0 0 0, 0, 0, 0;
+}
+
+.label-head {
+	-fx-font-size: 150%;
 }

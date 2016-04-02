@@ -2,8 +2,13 @@ package org.stummi.factorio.data;
 
 import lombok.Value;
 
+/**
+ * Immutable value to describe a given Amount in a given Time
+ * 
+ * The time is based on {@link Ticks}
+ */
 @Value
-public class Throughput {
+public class Throughput implements Comparable<Throughput> {
 	public static final Throughput NONE = Throughput.perMinute(0);
 	double amount;
 	Ticks ticks;
@@ -31,15 +36,39 @@ public class Throughput {
 	/**
 	 * Returns a Throughput which is a sum of this and the other Throughput
 	 * 
-	 * If both Throughputs are based on the same amount of ticks, the new
-	 * one will also be based on this tick amount, else the result will be based
-	 * on 60 ticks
+	 * If both Throughputs are based on the same amount of ticks, the new one
+	 * will also be based on this tick amount, else the result will be based on
+	 * 60 ticks
 	 */
 	public Throughput add(Throughput other) {
 		if (this.ticks.equals(other.ticks)) {
 			return new Throughput(this.amount + other.amount, ticks);
 		} else {
-			return Throughput.perMinute(amountPerMinute() + other.amount);
+			return Throughput.perMinute(amountPerMinute()
+					+ other.amountPerMinute());
 		}
+	}
+
+	/**
+	 * returns a Throughput which is this Throughput minus the given throughput.
+	 * 
+	 * The behavior is the same as if {@link #add(Throughput)} would be called
+	 * with a negative Throughput
+	 */
+	public Throughput remove(Throughput other) {
+		return add(other.negate());
+	}
+
+	private Throughput negate() {
+		return new Throughput(-amount, ticks);
+	}
+
+	public boolean greaterOrEquals(Throughput compare) {
+		return amountPerMinute() >= compare.amountPerMinute();
+	}
+
+	@Override
+	public int compareTo(Throughput o) {
+		return Double.compare(this.amountPerMinute(), o.amountPerMinute());
 	}
 }

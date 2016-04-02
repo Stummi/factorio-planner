@@ -5,15 +5,17 @@ import java.io.IOException;
 import java.util.Optional;
 
 import javafx.application.Application;
+import javafx.beans.InvalidationListener;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -30,7 +32,8 @@ public class PlannerApplication extends Application {
 	public void start(Stage stage) throws IOException {
 		File appDir = determineAppDir(stage);
 		if (appDir == null) {
-			// No Game directory could be determined and user canceled the dialog. 
+			// No Game directory could be determined and user canceled the
+			// dialog.
 			// We cannot do anything at this point
 			return;
 		}
@@ -39,27 +42,28 @@ public class PlannerApplication extends Application {
 		JFXImageFactory factory = new JFXImageFactory(
 				loader.getResourceFactory());
 
-		//GoalTable goalTable = new GoalTable(loader, factory);
+		GoalTable goalTable = new GoalTable(loader, factory);
+		goalTable.setEditable(true);
+
 		FactoryTable factoryTable = new FactoryTable(loader, factory);
 		factoryTable.setEditable(true);
 
-		ReportTable reportTable = new ReportTable(factory);
+		ReportTable reportTable = new ReportTable(loader, factory);
+		reportTable.addRecipeListener(factoryTable::addRecipe);
+		goalTable.setPrefWidth(100);
+		reportTable.setPrefWidth(100);
+		factoryTable.setPrefWidth(100);
 
-		Button addButton = new Button("Add");
-		Button delButton = new Button("Delete");
+		InvalidationListener mkReport = me -> reportTable
+				.setReport(factoryTable.getReport(goalTable.getGoals()));
+		factoryTable.addListener(mkReport);
+		goalTable.addListener(mkReport);
 
-		addButton.setOnAction(me -> factoryTable.newItem());
-		delButton.setOnAction(me -> factoryTable.deleteSelected());
-		factoryTable.addListener(me -> reportTable.setReport(factoryTable
-				.getReport()));
-
-		HBox hbox = new HBox(addButton, delButton);
-		SplitPane vbox = new SplitPane(factoryTable, reportTable);
-		HBox.setHgrow(factoryTable, Priority.ALWAYS);
-		
+		SplitPane vbox = new SplitPane(tableTitle("Goals", goalTable), tableTitle("Factories", factoryTable), tableTitle("Result", reportTable));
+		vbox.setDividerPositions(0.3, 0.7);
 		BorderPane bp = new BorderPane(vbox);
-		bp.setTop(hbox);
 
+		bp.setPrefSize(800, 600);
 		Scene scene = new Scene(bp);
 		scene.getStylesheets().add(
 				PlannerApplication.class.getResource("/style.css")
@@ -68,12 +72,22 @@ public class PlannerApplication extends Application {
 		stage.show();
 	}
 
+	private static Node tableTitle(String title, Node table) {
+		Label lblTitle = new Label(title);
+		lblTitle.getStyleClass().add("label-head");
+		lblTitle.setTextAlignment(TextAlignment.CENTER);
+		
+		BorderPane bp = new BorderPane(table, lblTitle, null, null, null);
+		BorderPane.setAlignment(lblTitle, Pos.TOP_CENTER);
+		return bp;
+	}
+
 	private File determineAppDir(Stage stage) {
 		File file = GamePathFinder.findGameDir();
-		if(file != null) {
+		if (file != null) {
 			// We could find the game directory automatically
 			return file;
-		} 
+		}
 
 		// no success with automatically file finding. Lets bother the User
 		// with it
@@ -99,7 +113,7 @@ public class PlannerApplication extends Application {
 
 		do {
 			file = chooser.showDialog(stage);
-			if(file == null) {
+			if (file == null) {
 				// user canceled
 				return null;
 			} else if (!GamePathFinder.isSuitable(file)) {
@@ -108,6 +122,6 @@ public class PlannerApplication extends Application {
 			} else {
 				return file;
 			}
-		} while(true);
+		} while (true);
 	}
 }

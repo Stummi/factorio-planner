@@ -9,6 +9,7 @@ import lombok.Value;
 
 import org.stummi.factorio.data.Factory;
 import org.stummi.factorio.data.Item;
+import org.stummi.factorio.data.ItemThroughput;
 import org.stummi.factorio.data.Recipe;
 import org.stummi.factorio.data.Throughput;
 
@@ -24,12 +25,12 @@ public class Plan {
 		double amount;
 	}
 
-	public void addReceipe(Recipe receipe, int count) {
-		addFactory(new Factory(receipe), count);
+	public void addRecipe(Recipe recipe, int count) {
+		addFactory(new Factory(recipe), count);
 	}
 
-	public void addReceipe(Recipe receipe) {
-		addFactory(new Factory(receipe), 1);
+	public void addRecipe(Recipe recipe) {
+		addFactory(new Factory(recipe), 1);
 	}
 
 	public void addFactory(Factory factory) {
@@ -64,6 +65,14 @@ public class Plan {
 		Throughput curGoal = goals.getOrDefault(item, Throughput.perMinute(0));
 		curGoal = curGoal.add(throughput);
 		goals.put(item, curGoal);
+	}
+	
+	public void addGoal(ItemThroughput it) {
+		addGoal(it.getItem(), it.getThroughput());
+	}
+
+	public void addGoals(List<ItemThroughput> goals) {
+		goals.forEach(this::addGoal);
 	}
 	
 	

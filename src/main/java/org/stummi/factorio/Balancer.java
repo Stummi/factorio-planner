@@ -25,7 +25,7 @@ public class Balancer {
 
 	public Balancer(Report report, Map<Item, Throughput> goals, List<Factory> toBalance) {
 		this(report, goals, toMap(toBalance));
-		
+		goals.keySet().forEach(report::addItem);
 	}
 
 	
@@ -45,7 +45,7 @@ public class Balancer {
 				Item i = ia.getItem();
 				Throughput tpFact = ia.getThroughput();
 				double goal = goals.getOrDefault(i, Throughput.NONE).amountPerSecond();
-				double currentDiff = report.getThroughputs(i).getDiffPerSecond() - goal;
+				double currentDiff = report.getThroughputs(i).getDiff().amountPerSecond() - goal;
 				if(currentDiff >= goal) {
 					// nothing to balance
 					continue;

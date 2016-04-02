@@ -5,6 +5,7 @@ import org.stummi.factorio.data.Entity;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class NameAndIconTableCell<S, T extends Entity> extends TableCell<S, T> {
@@ -55,15 +56,15 @@ public class NameAndIconTableCell<S, T extends Entity> extends TableCell<S, T> {
 	@Override
 	protected void updateItem(T item, boolean empty) {
 		super.updateItem(item, empty);
-		if (empty || item == null) {
+		if (empty) {
 			setGraphic(null);
 			return;
 		} else if (getGraphic() == null) {
 			setGraphic(imageView);
 		}
 
-		String iconName = item.getIconName();
-		imageView.setImage(factory.getImage(iconName));
+		Image icon = item == null ? JFXImageFactory.DEFAULT_IMAGE : factory.getImage(item.getIconName());
+		imageView.setImage(icon);
 	}
 
 	private ComboBox<T> createComboBox() {

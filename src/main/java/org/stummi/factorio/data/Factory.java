@@ -17,8 +17,8 @@ public class Factory {
 		this(type, Recipe.NONE);
 	}
 
-	public Factory(Recipe receipe) {
-		this(AssemblingMachine.NONE, receipe);
+	public Factory(Recipe recipe) {
+		this(AssemblingMachine.NONE, recipe);
 	}
 
 	public List<ItemThroughput> getResourceThroughputs() {

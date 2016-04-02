@@ -2,6 +2,9 @@ package org.stummi.factorio.data;
 
 import lombok.Value;
 
+/**
+ * The basic time unit within the Factorio Game. One second equals 60 ticks
+ */
 @Value
 public class Ticks {
 	public static final int TICKS_PER_SECOND = 60;

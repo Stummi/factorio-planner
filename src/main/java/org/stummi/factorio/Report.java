@@ -18,20 +18,20 @@ public class Report implements Cloneable {
 	@RequiredArgsConstructor
 	@Getter
 	public static class Throughputs {
-		private final Item product;
-		double inPerSecond;
-		double outPerSecond;
+		private final Item item;
+		Throughput consumption = Throughput.NONE;
+		Throughput production = Throughput.NONE;
 
-		void add(Throughput throughput) {
-			outPerSecond += throughput.amountPerSecond();
+		void addConsumption(Throughput throughput) {
+			consumption = consumption.add(throughput);
 		}
 
-		void remove(Throughput throughput) {
-			inPerSecond += throughput.amountPerSecond();
+		void addProduction(Throughput throughput) {
+			production = production.add(throughput);
 		}
 
-		public double getDiffPerSecond() {
-			return outPerSecond - inPerSecond;
+		public Throughput getDiff() {
+			return production.remove(consumption);
 		}
 	}
 
@@ -57,8 +57,8 @@ public class Report implements Cloneable {
 				.map(f -> f.getRecipe().getName().toString())
 				.mapToInt(String::length).max().orElse(8);
 
-		String head = String.format("%"+typeColLen+"s | %"+recipeColLen+"s | %10s%n", "Machine", "Recipe",
-				"Count");
+		String head = String.format("%" + typeColLen + "s | %" + recipeColLen
+				+ "s | %10s%n", "Machine", "Recipe", "Count");
 		pout.print(head);
 		pout.print(head.replaceAll(".", "-"));
 
@@ -72,8 +72,10 @@ public class Report implements Cloneable {
 						e -> {
 							Factory f = e.getKey();
 							Double amount = e.getValue();
-							pout.printf("%"+typeColLen+"s | %"+recipeColLen+"s | %10.2f%n", f.getType()
-									.getName(), f.getRecipe().getName(), amount);
+							pout.printf("%" + typeColLen + "s | %"
+									+ recipeColLen + "s | %10.2f%n", f
+									.getType().getName(), f.getRecipe()
+									.getName(), amount);
 						});
 
 		pout.println();
@@ -92,28 +94,34 @@ public class Report implements Cloneable {
 		throughputs
 				.values()
 				.stream()
-				.sorted(Comparator
-						.comparingDouble(tp -> (tp.inPerSecond - tp.outPerSecond)))
+				.sorted(Comparator.comparing(Throughputs::getDiff))
 				.forEach(
 						tp -> {
-							double in = tp.inPerSecond * 60;
-							double out = tp.outPerSecond * 60;
+							double in = tp.consumption.amountPerMinute();
+							double out = tp.production.amountPerMinute();
+							double diff = tp.getDiff().amountPerMinute();
 							pout.printf("%" + nameColLen
 									+ "s | %8.2f | %8.2f | %8.2f%n",
-									tp.product.getName(), in, out, out - in);
+									tp.item.getName(), in, out, diff);
 						});
 		pout.println();
 		pout.println();
 	}
 
+	// ensures an Item beeing in the report, even if theres no production or
+	// consumption
+	public void addItem(Item item) {
+		getThroughputs(item);
+	}
+
 	public void addFactory(Factory fact, double count) {
 		for (ItemThroughput throughput : fact.getResourceThroughputs()) {
-			getThroughputs(throughput.getItem()).remove(
+			getThroughputs(throughput.getItem()).addConsumption(
 					throughput.getThroughput().multiply(count));
 		}
 
 		for (ItemThroughput throughput : fact.getProductThroughputs()) {
-			getThroughputs(throughput.getItem()).add(
+			getThroughputs(throughput.getItem()).addProduction(
 					throughput.getThroughput().multiply(count));
 		}
 	}
