@@ -1,5 +1,6 @@
 package org.stummi.factorio.data;
 
+import java.util.List;
 import java.util.Map;
 
 import org.stummi.factorio.luaconf.LuaEntityLoader;
@@ -28,6 +29,10 @@ public interface EntityLoader {
 	 */
 	Map<String, AssemblingMachine> getAssemblingMachines();
 
+	List<Grouped<Item>> getGroupedItems();
+	
+	List<Grouped<Recipe>> getGroupedRecipes();
+	
 	/**
 	 * Returns a {@link ResourceFactory} capable of loading the Icons named by
 	 * the Enties returned from this instance

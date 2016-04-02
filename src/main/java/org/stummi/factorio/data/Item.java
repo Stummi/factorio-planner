@@ -8,13 +8,11 @@ import lombok.Value;
 /**
  * An Item denotes anything that can be produced or consumed by Factories
  */
-public class Item implements Entity {
+public class Item implements GroupableEntity {
 	String name;
 	String iconName;
-
-	public Item(String name) {
-		this(name, null);
-	}
+	Order order;
+	ItemSubgroup subgroup;
 
 	public ItemAmount amount(double d) {
 		return new ItemAmount(this, d);

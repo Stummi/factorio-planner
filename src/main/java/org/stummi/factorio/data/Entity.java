@@ -1,12 +1,6 @@
 package org.stummi.factorio.data;
 
-import java.util.Comparator;
 
-public interface Entity {
-	String getName();
+public interface Entity extends Named {
 	String getIconName();
-	
-	static public <T extends Entity> Comparator<T> nameComparator() {
-		return Comparator.comparing(Entity::getName);
-	}
 }

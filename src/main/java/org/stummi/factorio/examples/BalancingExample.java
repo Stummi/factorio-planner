@@ -1,27 +1,21 @@
-package org.stummi.factorio;
+package org.stummi.factorio.examples;
 
-import java.io.File;
-import java.io.IOException;
+import org.stummi.factorio.Plan;
+import org.stummi.factorio.data.EntityLoader;
 
-import org.stummi.factorio.data.Throughput;
-import org.stummi.factorio.luaconf.GamePathFinder;
-import org.stummi.factorio.luaconf.LuaEntityLoader;
+public class BalancingExample extends AbstractExample{
+	public static void main(String[] args) throws Exception {
+		new BalancingExample().run(args);
+	}
 
-public class Main {
-	public static void main(String[] args) throws IOException {
-		File file = GamePathFinder.findGameDir();
-		if (file == null) {
-			// no game path found :(
-			return;
-		}
-
-		LuaEntityLoader loader = new LuaEntityLoader(file);
-
+	@Override
+	protected void runExample(EntityLoader loader, String[] args)
+			throws Exception {		
 		Plan plan = new Plan();
-		plan.addGoal(loader.getItem("science-pack-1"), Throughput.perMinute(30));
-		plan.addGoal(loader.getItem("science-pack-2"), Throughput.perMinute(30));
-		plan.addGoal(loader.getItem("science-pack-3"), Throughput.perMinute(30));
-		plan.addGoal(loader.getItem("alien-science-pack"), Throughput.perMinute(50));
+		plan.addGoal(loader.getItem("science-pack-1").amount(30).perMinute());
+		plan.addGoal(loader.getItem("science-pack-2").amount(30).perMinute());
+		plan.addGoal(loader.getItem("science-pack-3").amount(30).perMinute());
+		plan.addGoal(loader.getItem("alien-science-pack").amount(30).perMinute());
 
 		plan.addFactoryToBalance(loader.getFactory("assembling-machine-1", "science-pack-1"));
 		plan.addFactoryToBalance(loader.getFactory("assembling-machine-1", "science-pack-2"));

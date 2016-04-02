@@ -24,10 +24,10 @@ import lombok.Getter;
 import org.stummi.factorio.Plan;
 import org.stummi.factorio.Report;
 import org.stummi.factorio.data.AssemblingMachine;
-import org.stummi.factorio.data.Entity;
 import org.stummi.factorio.data.EntityLoader;
 import org.stummi.factorio.data.Factory;
 import org.stummi.factorio.data.ItemThroughput;
+import org.stummi.factorio.data.Named;
 import org.stummi.factorio.data.Recipe;
 
 public class FactoryTable extends TableView<FactoryTable.Entry> implements
@@ -80,11 +80,11 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 
 		ObservableList<AssemblingMachine> factories = FXCollections
 				.observableArrayList(loader.getAssemblingMachines().values());
-		factories.sort(Entity.nameComparator());
+		factories.sort(Named.nameComparator());
 
 		ObservableList<Recipe> recipes = FXCollections
 				.observableArrayList(loader.getRecipes().values());
-		recipes.sort(Entity.nameComparator());
+		recipes.sort(Named.nameComparator());
 
 		TableColumn<Entry, AssemblingMachine> typeCol = new TableColumn<>(
 				"type");
@@ -92,7 +92,7 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 		typeCol.setCellValueFactory(cd -> cd.getValue().getType());
 		typeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact,
 				factories));
-		typeCol.setComparator(Entity.nameComparator());
+		typeCol.setComparator(Named.nameComparator());
 		typeCol.setPrefWidth(70);
 
 		TableColumn<Entry, Recipe> recipeCol = new TableColumn<>("receipe");
@@ -100,7 +100,7 @@ public class FactoryTable extends TableView<FactoryTable.Entry> implements
 		recipeCol.setCellValueFactory(cd -> cd.getValue().getReceipe());
 		recipeCol.setCellFactory(cv -> new NameAndIconTableCell<>(ifact,
 				recipes));
-		recipeCol.setComparator(Entity.nameComparator());
+		recipeCol.setComparator(Named.nameComparator());
 		recipeCol.setPrefWidth(70);
 
 		TableColumn<Entry, Double> countCol = new TableColumn<>("count");

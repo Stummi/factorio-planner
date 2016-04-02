@@ -18,4 +18,8 @@ public class ItemAmount {
 	public ItemThroughput perTicks(Ticks ticks) {
 		return new ItemThroughput(item, new Throughput(amount, ticks));
 	}
+
+	public ItemThroughput perMinute() {
+		return perSeconds(60);
+	}
 }
